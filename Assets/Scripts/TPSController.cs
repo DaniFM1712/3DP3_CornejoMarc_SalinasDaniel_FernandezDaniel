@@ -57,6 +57,8 @@ public class TPSController : MonoBehaviour
             movement = movement.normalized * currentSpeed * Time.deltaTime;
             transform.forward = movement;   
         }
+        Debug.Log(movement.magnitude);
+        animator.SetBool("isRunning", Input.GetKey(runKey));
         animator.SetFloat("speed", movement.magnitude);
 
         if (Input.GetKey(jumpKey) && onGround)
@@ -71,6 +73,10 @@ public class TPSController : MonoBehaviour
 
         onGround = (flags & CollisionFlags.Below) != 0;
         touchingCeiling = (flags & CollisionFlags.Above) != 0;
+
+        animator.SetFloat("verticalSpeed", verticalSpeed);
+        animator.SetBool("onGround", onGround);
+
 
         if (onGround) verticalSpeed = 0.0f;
         if (touchingCeiling && verticalSpeed > 0.0f) verticalSpeed = 0.0f;
