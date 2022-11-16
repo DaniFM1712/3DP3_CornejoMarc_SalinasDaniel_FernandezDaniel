@@ -65,7 +65,20 @@ public class TPSController : MonoBehaviour
         if (Input.GetKeyDown(jumpKey) && jumpCount < 3)
         {
             jumpCount++;
-            verticalSpeed = jumpSpeed;
+            switch (jumpCount)
+            {
+                case 1:
+                    verticalSpeed = jumpSpeed;
+                    break;
+                case 2:
+                    verticalSpeed = jumpSpeed * 1.5f;
+                    break;
+                case 3:
+                    verticalSpeed = jumpSpeed * 2f;
+                    break;
+            }
+            
+            animator.SetInteger("jumpCount", jumpCount);
         }
 
 
@@ -89,8 +102,10 @@ public class TPSController : MonoBehaviour
         {
             verticalSpeed = 0.0f;
             jumpCount = 0;
+            animator.SetInteger("jumpCount", jumpCount);
         }
         if (touchingCeiling && verticalSpeed > 0.0f) verticalSpeed = 0.0f;
+
 
 
     }

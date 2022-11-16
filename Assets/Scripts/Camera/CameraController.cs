@@ -51,7 +51,7 @@ public class CameraController : MonoBehaviour
 
         Vector3 l_DesiredPosition = transform.position;
 
-		if(!m_AngleLocked && (l_MouseAxisX>0.01f || l_MouseAxisX<-0.01f || l_MouseAxisY>0.01f || l_MouseAxisY<-0.01f))
+		if(!m_AngleLocked)
 		{
 			Vector3 l_EulerAngles=transform.eulerAngles;
 			float l_Yaw=(l_EulerAngles.y+180.0f);
