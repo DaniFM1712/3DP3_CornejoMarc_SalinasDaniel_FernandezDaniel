@@ -22,9 +22,16 @@ public class TPSController : MonoBehaviour
     bool touchingCeiling = false;
     int jumpCount = 0;
 
+    [SerializeField] Transform cameraDummy;
+
+    float lastTimeMoved;
+    Vector3 lastMouseCoords = Vector3.zero;
+
+
     void Start()
     {
-        
+
+        lastTimeMoved = Time.time;
     }
 
     // Update is called once per frame
@@ -106,7 +113,35 @@ public class TPSController : MonoBehaviour
         }
         if (touchingCeiling && verticalSpeed > 0.0f) verticalSpeed = 0.0f;
 
+        Vector3 mouseDelta = Input.mousePosition - lastMouseCoords;
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        {
+            float l_MouseAxisX = Input.GetAxis("Mouse X");
+            float l_MouseAxisY = Input.GetAxis("Mouse Y");
+            if (lastTimeMoved + 5f <= Time.time)
+            {
+                if ((l_MouseAxisX == 0.00f && l_MouseAxisY == 0.0f))
+                {
+                    cam.transform.position = Vector3.Lerp(cam.transform.position, cameraDummy.position, Time.deltaTime * 3f);
+                }
+                else lastTimeMoved = Time.time;
 
+            }
+            if (lastTimeMoved + 10f <= Time.time)
+            {
+                animator.SetBool("isCrouching", true);
+            }
+            else animator.SetBool("isCrouching", false);
+
+
+            //isMoving = false;
+
+        }
+        else
+        {
+            //isMoving = true;
+            lastTimeMoved = Time.time;
+        }
 
     }
 }
