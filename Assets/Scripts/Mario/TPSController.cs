@@ -20,6 +20,7 @@ public class TPSController : MonoBehaviour
     float verticalSpeed = 0.0f;
     bool onGround = false;
     bool touchingCeiling = false;
+    int jumpCount = 0;
 
     void Start()
     {
@@ -61,8 +62,12 @@ public class TPSController : MonoBehaviour
         animator.SetBool("isRunning", Input.GetKey(runKey));
         animator.SetFloat("speed", movement.magnitude);
 
-        if (Input.GetKey(jumpKey) && onGround)
+        if (Input.GetKeyDown(jumpKey) && jumpCount < 3)
+        {
+            jumpCount++;
             verticalSpeed = jumpSpeed;
+        }
+
 
         //Apply gravity to vertical speed
         verticalSpeed += Physics.gravity.y * Time.deltaTime;
@@ -71,14 +76,20 @@ public class TPSController : MonoBehaviour
         //Move
         CollisionFlags flags = controller.Move(movement);
 
-        onGround = (flags & CollisionFlags.Below) != 0;
+        //onGround =(flags & CollisionFlags.Below) != 0;
+        onGround = Physics.Raycast(new Ray(transform.position, Vector3.down), 0.2f);
+        
         touchingCeiling = (flags & CollisionFlags.Above) != 0;
 
         animator.SetFloat("verticalSpeed", verticalSpeed);
         animator.SetBool("onGround", onGround);
 
 
-        if (onGround) verticalSpeed = 0.0f;
+        if (onGround)
+        {
+            verticalSpeed = 0.0f;
+            jumpCount = 0;
+        }
         if (touchingCeiling && verticalSpeed > 0.0f) verticalSpeed = 0.0f;
 
 
