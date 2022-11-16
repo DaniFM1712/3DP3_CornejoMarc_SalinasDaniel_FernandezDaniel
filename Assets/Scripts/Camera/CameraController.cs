@@ -15,7 +15,8 @@ public class CameraController : MonoBehaviour
 	public KeyCode m_DebugLockKeyCode=KeyCode.O;
 	bool m_AngleLocked=false;
 	bool m_CursorLocked=true;
-	
+	[SerializeField] LayerMask layerMask;
+	[SerializeField] float offsetCollision;
 	void Start()
 	{
 		Cursor.lockState=CursorLockMode.Locked;
@@ -88,7 +89,11 @@ public class CameraController : MonoBehaviour
 		l_DesiredPosition = m_LookAt.position - l_Direction * l_Distance;
 
 		//TODO: Bring camera closer if colliding with any object.
-            
+		if (Physics.Raycast(m_LookAt.position, (-l_Direction), out RaycastHit hit, l_Distance, layerMask))
+		{
+			l_DesiredPosition = hit.point + l_Direction * offsetCollision;
+		}
+
 		transform.forward=l_Direction;
 		transform.position=l_DesiredPosition;
 	} 
