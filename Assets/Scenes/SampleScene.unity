@@ -123,36 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &570593125
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 570593126}
-  m_Layer: 0
-  m_Name: cameraDummy
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &570593126
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 570593125}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.52, z: -2.15}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 902389199}
-  m_RootOrder: 10
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &586988909
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -311,36 +281,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &846991785
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 846991786}
-  m_Layer: 0
-  m_Name: dummy
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &846991786
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 846991785}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.979, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 902389199}
-  m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &902389194 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100098, guid: 2c49a169fa02b2545921fcc829011ecb, type: 3}
@@ -370,7 +310,6 @@ MonoBehaviour:
   leftKey: 97
   runKey: 304
   jumpKey: 32
-  cameraDummy: {fileID: 570593126}
 --- !u!143 &902389196
 CharacterController:
   m_ObjectHideFlags: 0
@@ -507,7 +446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6facc88a403c3f642bedd37a2d5428ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_LookAt: {fileID: 846991786}
+  m_LookAt: {fileID: 902389199}
   m_YawRotationalSpeed: 5
   m_PitchRotationalSpeed: 5
   m_MinPitch: 10
@@ -516,10 +455,6 @@ MonoBehaviour:
   maxCamDist: 10
   m_DebugLockAngleKeyCode: 105
   m_DebugLockKeyCode: 111
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 1
-  offsetCollision: 0.2
 --- !u!1001 &2021018569
 PrefabInstance:
   m_ObjectHideFlags: 0
