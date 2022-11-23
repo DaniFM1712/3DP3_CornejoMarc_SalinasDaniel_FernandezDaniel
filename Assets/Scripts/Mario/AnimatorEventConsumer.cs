@@ -13,24 +13,36 @@ public class AnimatorEventConsumer : MonoBehaviour
 
     void Step()
     {
-        Debug.Log("Step!");
+        //Debug.Log("Step!");
+    }
+    void Jump1()
+    {
+        //Debug.Log("Jump1!");
+    }
+    void Jump2()
+    {
+        //Debug.Log("Jump2!");
+    }
+    void Jump3()
+    {
+        //Debug.Log("Jump3!");
     }
 
     void PunchSound1(AnimationEvent animation)
     {
-        Debug.Log("Punch1!");
+        //Debug.Log("Punch1!");
     }
     void PunchSound2(AnimationEvent animation)
     {
-        Debug.Log("Punch2!");
+        //Debug.Log("Punch2!");
     }
     void PunchSound3(AnimationEvent animation)
     {
-        Debug.Log("Punch3!");
+        //Debug.Log("Punch3!");
     }
     void FinishPunch(AnimationEvent animation)
     {
-        Debug.Log("FinishPunch!");
+        //Debug.Log("FinishPunch!");
     }
 
 }

@@ -39,6 +39,7 @@ public class TPController : MonoBehaviour
     bool onGround = false;
     bool touchingCeiling = false;
     int jumpCount = 0;
+    float gravityMultiplyer = 1f;
 
     [SerializeField] Transform cameraDummy;
 
@@ -62,7 +63,7 @@ public class TPController : MonoBehaviour
         Vector3 fw = cam.transform.forward;
         fw.y = 0f;
         fw = fw.normalized;
-        
+
         Vector3 right = cam.transform.right;
         right.y = 0f;
         right = right.normalized;
@@ -95,7 +96,6 @@ public class TPController : MonoBehaviour
             movement = movement.normalized * currentSpeed * Time.deltaTime;
             transform.forward = movement;   
         }
-        //Debug.Log(movement.magnitude);
         animator.SetBool("isRunning", Input.GetKey(runKey));
         animator.SetFloat("speed", currentSpeed);
 
@@ -106,12 +106,15 @@ public class TPController : MonoBehaviour
             {
                 case 1:
                     verticalSpeed = jumpSpeed;
+                    gravityMultiplyer = 1f;
                     break;
                 case 2:
                     verticalSpeed = jumpSpeed * 1.5f;
+                    gravityMultiplyer = 2f;
                     break;
                 case 3:
                     verticalSpeed = jumpSpeed * 2f;
+                    gravityMultiplyer = 3f;
                     break;
             }
             
@@ -120,7 +123,7 @@ public class TPController : MonoBehaviour
 
 
         //Apply gravity to vertical speed
-        verticalSpeed += Physics.gravity.y * Time.deltaTime;
+        verticalSpeed += Physics.gravity.y * gravityMultiplyer * Time.deltaTime;
         movement.y += verticalSpeed * Time.deltaTime;
 
         //Move
@@ -138,15 +141,16 @@ public class TPController : MonoBehaviour
         if (onGround)
         {
             verticalSpeed = 0.0f;
+            gravityMultiplyer = 1f;
             jumpCount = 0;
             animator.SetInteger("jumpCount", jumpCount);
         }
         if (touchingCeiling && verticalSpeed > 0.0f) verticalSpeed = 0.0f;
 
         Vector3 mouseDelta = Input.mousePosition - lastMouseCoords;
-        if (currentSpeed==0)//animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        //if (animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        if(currentSpeed == 0)
         {
-            Debug.Log(currentSpeed);
             float l_MouseAxisX = Input.GetAxis("Mouse X");
             float l_MouseAxisY = Input.GetAxis("Mouse Y");
             if (lastTimeMoved + 5f <= Time.time)
@@ -188,7 +192,7 @@ public class TPController : MonoBehaviour
 
     bool CanPunch()
     {
-        return !m_PunchActive;
+        return !m_PunchActive && animator.GetBool("onGround");
     }
 
     bool MustStartComboPunch()
