@@ -2,8 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TPSController : MonoBehaviour
+public class TPController : MonoBehaviour
 {
+    public enum TPunchType
+    {
+        RIGHT_HAND,
+        LEFT_HAND, 
+        KICK
+    }
+
     [SerializeField] Camera cam;
     [SerializeField] CharacterController controller;
     [SerializeField] Animator animator;
@@ -16,6 +23,17 @@ public class TPSController : MonoBehaviour
     [SerializeField] KeyCode leftKey;
     [SerializeField] KeyCode runKey;
     [SerializeField] KeyCode jumpKey;
+    
+    [Header("Colliders")]
+    [SerializeField] Collider m_RightHandCollider;
+    [SerializeField] Collider m_LeftHandCollider;
+    [SerializeField] Collider m_KickCollider;
+
+    [Header("Punch")]
+    [SerializeField] float m_PunchComboTime = 2.5f;
+    TPunchType m_CurrentPunch = TPunchType.RIGHT_HAND;
+    float m_CurrentPunchTime;
+    bool m_PunchActive = false;
 
     float verticalSpeed = 0.0f;
     bool onGround = false;
@@ -26,12 +44,16 @@ public class TPSController : MonoBehaviour
 
     float lastTimeMoved;
     Vector3 lastMouseCoords = Vector3.zero;
-
+    [SerializeField] private float m_BridgeForce = 3;
 
     void Start()
     {
-
         lastTimeMoved = Time.time;
+        
+        m_CurrentPunchTime = -m_PunchComboTime;
+        m_LeftHandCollider.gameObject.SetActive(false);
+        m_RightHandCollider.gameObject.SetActive(false);
+        m_KickCollider.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -56,18 +78,26 @@ public class TPSController : MonoBehaviour
             movement += right;
         if (Input.GetKey(leftKey))
             movement += -right;
+        if (Input.GetMouseButtonDown(0) && CanPunch())
+        {
+            if (MustStartComboPunch())
+                SetComboPunch(TPunchType.RIGHT_HAND);
+            else
+                NextComboPunch();
+        }
 
         //Movement: camera direction + input + speed
         //If Movement Forward = Movement
+        float currentSpeed = 0f;
         if (movement.magnitude > 0.0f)
         {
-            float currentSpeed = (Input.GetKey(runKey) ? runSpeed : walkSpeed);
+            currentSpeed = (Input.GetKey(runKey) ? runSpeed : walkSpeed);
             movement = movement.normalized * currentSpeed * Time.deltaTime;
             transform.forward = movement;   
         }
         Debug.Log(movement.magnitude);
         animator.SetBool("isRunning", Input.GetKey(runKey));
-        animator.SetFloat("speed", movement.magnitude);
+        animator.SetFloat("speed", currentSpeed);
 
         if (Input.GetKeyDown(jumpKey) && jumpCount < 3)
         {
@@ -143,5 +173,62 @@ public class TPSController : MonoBehaviour
             lastTimeMoved = Time.time;
         }
 
+    }
+    public void HitPunch(TPunchType punchType, bool active)
+    {
+        if (punchType == TPunchType.RIGHT_HAND)
+            m_RightHandCollider.gameObject.SetActive(active);
+        else if (punchType == TPunchType.LEFT_HAND)
+            m_LeftHandCollider.gameObject.SetActive(active);
+        else if (punchType == TPunchType.KICK)
+            m_KickCollider.gameObject.SetActive(active);
+    }
+
+    bool CanPunch()
+    {
+        return !m_PunchActive;
+    }
+
+    bool MustStartComboPunch()
+    {
+        return (Time.time - m_CurrentPunchTime) > m_PunchComboTime;
+    }
+
+    public void SetPunchActive(bool isActive)
+    {
+        m_PunchActive = isActive;
+    }
+
+    void NextComboPunch()
+    {
+        if (m_CurrentPunch == TPunchType.RIGHT_HAND)
+           SetComboPunch(TPunchType.LEFT_HAND);
+        else if (m_CurrentPunch == TPunchType.LEFT_HAND)
+            SetComboPunch(TPunchType.KICK);
+        else if (m_CurrentPunch == TPunchType.KICK)
+            SetComboPunch(TPunchType.RIGHT_HAND);
+    }
+
+    void SetComboPunch(TPunchType punchType)
+    {
+        m_CurrentPunch = punchType;
+        if (punchType == TPunchType.RIGHT_HAND)
+            animator.SetTrigger("Punch1");
+        else if (punchType == TPunchType.LEFT_HAND)
+            animator.SetTrigger("Punch2");
+        else if (punchType == TPunchType.KICK)
+            animator.SetTrigger("Punch3");
+
+        m_CurrentPunchTime = Time.time;
+        m_PunchActive = true;
+
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.collider.CompareTag("Bridge"))
+        {
+            hit.collider.gameObject.GetComponent<Rigidbody>().AddForceAtPosition(-hit.normal * m_BridgeForce, hit.point);
+        }
     }
 }
