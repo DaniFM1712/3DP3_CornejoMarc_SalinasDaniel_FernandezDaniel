@@ -95,7 +95,7 @@ public class TPController : MonoBehaviour
             movement = movement.normalized * currentSpeed * Time.deltaTime;
             transform.forward = movement;   
         }
-        Debug.Log(movement.magnitude);
+        //Debug.Log(movement.magnitude);
         animator.SetBool("isRunning", Input.GetKey(runKey));
         animator.SetFloat("speed", currentSpeed);
 
@@ -144,14 +144,16 @@ public class TPController : MonoBehaviour
         if (touchingCeiling && verticalSpeed > 0.0f) verticalSpeed = 0.0f;
 
         Vector3 mouseDelta = Input.mousePosition - lastMouseCoords;
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        if (currentSpeed==0)//animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
+            Debug.Log(currentSpeed);
             float l_MouseAxisX = Input.GetAxis("Mouse X");
             float l_MouseAxisY = Input.GetAxis("Mouse Y");
             if (lastTimeMoved + 5f <= Time.time)
             {
                 if ((l_MouseAxisX == 0.00f && l_MouseAxisY == 0.0f))
                 {
+                    cam.transform.rotation = Quaternion.Lerp(cam.transform.rotation, cameraDummy.rotation, Time.deltaTime * 3f);
                     cam.transform.position = Vector3.Lerp(cam.transform.position, cameraDummy.position, Time.deltaTime * 3f);
                 }
                 else lastTimeMoved = Time.time;
