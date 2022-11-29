@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class TPController : MonoBehaviour
+public class TPController : MonoBehaviour, IRestartGameElement
 {
     public enum TPunchType
     {
@@ -35,6 +34,11 @@ public class TPController : MonoBehaviour
     float m_CurrentPunchTime;
     bool m_PunchActive = false;
 
+    [Header("Elevator")]
+    [SerializeField] private float m_ElevatorMaxAngleAllowed = 10.0f;
+    private Collider m_CurrentElevator = null;
+
+
     float verticalSpeed = 0.0f;
     bool onGround = false;
     bool touchingCeiling = false;
@@ -47,14 +51,23 @@ public class TPController : MonoBehaviour
     Vector3 lastMouseCoords = Vector3.zero;
     [SerializeField] private float m_BridgeForce = 3;
 
+
+    CheckpointScript m_CurrentCheckpoint = null;
+    Vector3 m_StartPosition;
+    Quaternion m_StartRotation;
+
     void Start()
     {
         lastTimeMoved = Time.time;
-        
+    
         m_CurrentPunchTime = -m_PunchComboTime;
         m_LeftHandCollider.gameObject.SetActive(false);
         m_RightHandCollider.gameObject.SetActive(false);
         m_KickCollider.gameObject.SetActive(false);
+
+        m_StartPosition = transform.position;
+        m_StartRotation = transform.rotation;
+        GameControllerScript.GetGameController().AddRestartGameElement(this);
     }
 
     // Update is called once per frame
@@ -180,6 +193,13 @@ public class TPController : MonoBehaviour
         }
 
     }
+
+    private void LateUpdate()
+    {
+        float l_AngleY = transform.rotation.eulerAngles.y;
+        transform.rotation = Quaternion.Euler(0.0f, l_AngleY, 0.0f);
+    }
+
     public void HitPunch(TPunchType punchType, bool active)
     {
         if (punchType == TPunchType.RIGHT_HAND)
@@ -235,6 +255,90 @@ public class TPController : MonoBehaviour
         if (hit.collider.CompareTag("Bridge"))
         {
             hit.collider.gameObject.GetComponent<Rigidbody>().AddForceAtPosition(-hit.normal * m_BridgeForce, hit.point);
+        }
+    }
+
+    public void RestartGame()
+    {
+        controller.enabled = false;
+
+        if(m_CurrentCheckpoint == null)
+        {
+            transform.position = m_StartPosition;
+            transform.rotation = m_StartRotation;
+        }
+        else
+        {
+            transform.position = m_CurrentCheckpoint.m_RespawnPoint.position;
+            transform.rotation = m_CurrentCheckpoint.m_RespawnPoint.rotation;
+        }
+
+
+        controller.enabled = true;
+        transform.SetParent(null);
+        m_CurrentElevator = null;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Elevator"))
+        {
+            if (m_CurrentElevator == null && CanAttachToElevator(other))
+            {
+                AttachToElevator(other);
+            }
+        }
+
+        if (other.CompareTag("Checkpoint"))
+        {
+            m_CurrentCheckpoint = other.GetComponent<CheckpointScript>();
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Elevator"))
+        {
+            if(m_CurrentElevator == null)
+            {
+                if (CanAttachToElevator(other))
+                {
+                    AttachToElevator(other);
+                }
+            }
+            else
+            {
+                if(m_CurrentElevator == other && !CanAttachToElevator(other))
+                {
+                    DetachElevator();
+                }
+            }
+
+        }
+    }
+
+    bool CanAttachToElevator (Collider other)
+    {
+        return Vector3.Dot(other.transform.forward, Vector3.up) >= Mathf.Cos(m_ElevatorMaxAngleAllowed * Mathf.Rad2Deg);
+    }
+
+    void AttachToElevator(Collider other)
+    {
+        transform.SetParent(other.transform);
+        m_CurrentElevator = other;
+    }
+
+    void DetachElevator()
+    {
+        transform.SetParent(null);
+        m_CurrentElevator = null;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if(other.CompareTag("Elevator") && other == m_CurrentElevator)
+        {
+            DetachElevator();
         }
     }
 }

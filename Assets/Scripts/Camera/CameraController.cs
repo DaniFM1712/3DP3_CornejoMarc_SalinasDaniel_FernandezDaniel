@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class CameraController : MonoBehaviour, IRestartGameElement
 {
 	public Transform m_LookAt;
 	public float m_YawRotationalSpeed;
@@ -17,10 +17,15 @@ public class CameraController : MonoBehaviour
 	bool m_CursorLocked=true;
 	[SerializeField] LayerMask layerMask;
 	[SerializeField] float offsetCollision;
+	Vector3 m_StartPosition;
+	Quaternion m_StartRotation;
 	void Start()
 	{
 		Cursor.lockState=CursorLockMode.Locked;
 		m_CursorLocked=true;
+		m_StartPosition = transform.position;
+		m_StartRotation = transform.rotation;
+		GameControllerScript.GetGameController().AddRestartGameElement(this);
 	}
 	void OnApplicationFocus()
 	{
@@ -96,5 +101,11 @@ public class CameraController : MonoBehaviour
 
 		transform.forward=l_Direction;
 		transform.position=l_DesiredPosition;
-	} 
+	}
+
+    public void RestartGame()
+    {
+		transform.position = m_StartPosition;
+		transform.rotation = m_StartRotation;
+    }
 }
