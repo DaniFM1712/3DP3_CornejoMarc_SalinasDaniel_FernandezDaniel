@@ -273,10 +273,9 @@ public class TPController : MonoBehaviour, IRestartGameElement
             transform.rotation = m_CurrentCheckpoint.m_RespawnPoint.rotation;
         }
 
-
-        controller.enabled = true;
         transform.SetParent(null);
         m_CurrentElevator = null;
+        controller.enabled = true;
     }
 
     private void OnTriggerEnter(Collider other)
