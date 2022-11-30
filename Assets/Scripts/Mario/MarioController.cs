@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class TPController : MonoBehaviour, IRestartGameElement
+using UnityEngine.Events;
+public class MarioController : MonoBehaviour, IRestartGameElement
 {
     public enum TPunchType
     {
@@ -56,8 +58,21 @@ public class TPController : MonoBehaviour, IRestartGameElement
     Vector3 m_StartPosition;
     Quaternion m_StartRotation;
 
+    [Header("Enemies & Health")]
+    [SerializeField] float m_VerticalKillSpeed = 5.0f;
+    [SerializeField] float m_KillGoombaMaxAngle = 45.0f;
+    [SerializeField] private UnityEvent healthUpdate;
+
+    private bool isInputAccepted = true;
+
+    private void Awake()
+    {
+        GameControllerScript.GetGameController();
+    }
+
     void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
         lastTimeMoved = Time.time;
     
         m_CurrentPunchTime = -m_PunchComboTime;
@@ -84,20 +99,23 @@ public class TPController : MonoBehaviour, IRestartGameElement
         Vector3 movement = Vector3.zero;
 
         //Check Input
-        if (Input.GetKey(fwKey))
-            movement += fw;
-        if (Input.GetKey(backKey))
-            movement += -fw;
-        if (Input.GetKey(rightKey))
-            movement += right;
-        if (Input.GetKey(leftKey))
-            movement += -right;
-        if (Input.GetMouseButtonDown(0) && CanPunch())
+        if (isInputAccepted)
         {
-            if (MustStartComboPunch())
-                SetComboPunch(TPunchType.RIGHT_HAND);
-            else
-                NextComboPunch();
+            if (Input.GetKey(fwKey))
+                movement += fw;
+            if (Input.GetKey(backKey))
+                movement += -fw;
+            if (Input.GetKey(rightKey))
+                movement += right;
+            if (Input.GetKey(leftKey))
+                movement += -right;
+            if (Input.GetMouseButtonDown(0) && CanPunch())
+            {
+                if (MustStartComboPunch())
+                    SetComboPunch(TPunchType.RIGHT_HAND);
+                else
+                    NextComboPunch();
+            }
         }
 
         //Movement: camera direction + input + speed
@@ -256,11 +274,52 @@ public class TPController : MonoBehaviour, IRestartGameElement
         {
             hit.collider.gameObject.GetComponent<Rigidbody>().AddForceAtPosition(-hit.normal * m_BridgeForce, hit.point);
         }
+
+        if (hit.collider.CompareTag("Goomba"))
+        {
+            if (CanKillWithFeet(hit.normal))
+            {
+                hit.collider.GetComponent<GoombaScript>().Kill();
+                JumpOverEnemy();
+            }
+            else
+            {
+                //empujar los dos en direcciones opuestas
+                Vector3 directionVector = (hit.collider.transform.position - transform.position).normalized;
+                directionVector.y = 0;
+                StartCoroutine(EnemyCollision(directionVector, hit.collider));
+                healthUpdate.Invoke();
+
+            }
+        }
+    }
+
+    IEnumerator EnemyCollision(Vector3 direction, Collider collision)
+    {
+        isInputAccepted = false;
+        for (int i = 0; i < 30; i++)
+        {
+            collision.GetComponent<CharacterController>().Move(direction * 0.1f);
+            GetComponent<CharacterController>().Move(-direction * 0.1f);
+            yield return new WaitForEndOfFrame();
+        }
+        isInputAccepted = true;
+    }
+
+    private bool CanKillWithFeet(Vector3 normal)
+    {
+        return verticalSpeed < 0.0f && 
+            Vector3.Dot(normal, Vector3.up) > Mathf.Cos(m_KillGoombaMaxAngle * Mathf.Deg2Rad);
+    }
+    private void JumpOverEnemy()
+    {
+        verticalSpeed = m_VerticalKillSpeed;
     }
 
     public void RestartGame()
     {
         controller.enabled = false;
+        isInputAccepted = true;
 
         if(m_CurrentCheckpoint == null)
         {
@@ -291,6 +350,11 @@ public class TPController : MonoBehaviour, IRestartGameElement
         if (other.CompareTag("Checkpoint"))
         {
             m_CurrentCheckpoint = other.GetComponent<CheckpointScript>();
+        }
+
+        if (other.CompareTag("Coin"))
+        {
+            other.GetComponent<CoinScript>().Pick();
         }
     }
 
@@ -339,5 +403,10 @@ public class TPController : MonoBehaviour, IRestartGameElement
         {
             DetachElevator();
         }
+    }
+
+    public void DisableInput()
+    {
+        isInputAccepted = false;
     }
 }

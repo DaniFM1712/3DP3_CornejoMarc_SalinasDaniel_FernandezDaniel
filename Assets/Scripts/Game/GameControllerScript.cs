@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 public class GameControllerScript : MonoBehaviour
@@ -7,6 +6,9 @@ public class GameControllerScript : MonoBehaviour
 
     static GameControllerScript m_GameController;
     List<IRestartGameElement> m_RestartGameElements = new List<IRestartGameElement>();
+    DependencyInjector m_DependencyInjector;
+
+
 
     static public GameControllerScript GetGameController()
     {
@@ -15,8 +17,21 @@ public class GameControllerScript : MonoBehaviour
             GameObject l_GameObject = new GameObject("GameController");
             GameControllerScript.DontDestroyOnLoad(l_GameObject);
             m_GameController = l_GameObject.AddComponent<GameControllerScript>();
+            l_GameObject.AddComponent<ScoreManager>();
+            m_GameController.Init();
         }
         return m_GameController;
+    }
+
+    private void Init()
+    {
+        m_DependencyInjector = gameObject.AddComponent<DependencyInjector>();
+        gameObject.AddComponent<ScoreManager>();
+    }
+
+    public DependencyInjector GetDependencyInjector()
+    {
+        return m_DependencyInjector;
     }
     public void AddRestartGameElement(IRestartGameElement restartGameElement)
     {

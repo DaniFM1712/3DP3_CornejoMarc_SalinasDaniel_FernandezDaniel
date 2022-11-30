@@ -5,10 +5,10 @@ using UnityEngine;
 public class PunchBehaviour : StateMachineBehaviour
 {
 
-    public TPController.TPunchType m_PunchType;
+    public MarioController.TPunchType m_PunchType;
     [SerializeField] float m_StartPcTime;
     [SerializeField] float m_EndPcTime;
-    TPController m_MarioController;
+    MarioController m_MarioController;
 
     bool m_PunchStarted;
 
@@ -17,7 +17,7 @@ public class PunchBehaviour : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         m_PunchStarted = false;
-        m_MarioController = animator.GetComponent<TPController>();
+        m_MarioController = animator.GetComponent<MarioController>();
         m_MarioController.HitPunch(m_PunchType, false);
     }
 
