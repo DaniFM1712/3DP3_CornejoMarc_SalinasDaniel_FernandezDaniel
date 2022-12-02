@@ -61,7 +61,9 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     [Header("Enemies & Health")]
     [SerializeField] float m_VerticalKillSpeed = 5.0f;
     [SerializeField] float m_KillGoombaMaxAngle = 45.0f;
-    [SerializeField] private UnityEvent healthUpdate;
+    [SerializeField] private UnityEvent<float> healthUpdate;
+    [SerializeField] UnityEvent makeHudVisible;
+
 
     private bool isInputAccepted = true;
 
@@ -285,10 +287,11 @@ public class MarioController : MonoBehaviour, IRestartGameElement
             else
             {
                 //empujar los dos en direcciones opuestas
+                makeHudVisible.Invoke();
                 Vector3 directionVector = (hit.collider.transform.position - transform.position).normalized;
                 directionVector.y = 0;
                 StartCoroutine(EnemyCollision(directionVector, hit.collider));
-                healthUpdate.Invoke();
+                healthUpdate.Invoke(-1.0f/8.0f);
 
             }
         }
@@ -355,6 +358,10 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         if (other.CompareTag("Coin"))
         {
             other.GetComponent<CoinScript>().Pick();
+        }
+        if (other.CompareTag("Life"))
+        {
+            other.GetComponent<LifeScript>().Pick();
         }
     }
 

@@ -37,7 +37,6 @@ public class GoombaScript : MonoBehaviour, IRestartGameElement
     public void Kill()
     {
         StartCoroutine(KillCoroutine());
-        
     }
 
     IEnumerator KillCoroutine()

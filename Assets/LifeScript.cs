@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
-
-public class CoinScript : MonoBehaviour, IRestartGameElement
+public class LifeScript : MonoBehaviour, IRestartGameElement
 {
     [SerializeField] UnityEvent makeHudVisible;
+    [SerializeField] UnityEvent <float> healthUpdate;
     private Vector3 initialPosition;
     private Quaternion initialRotation;
 
@@ -20,7 +18,8 @@ public class CoinScript : MonoBehaviour, IRestartGameElement
     public void Pick()
     {
         gameObject.SetActive(false);
-        GameControllerScript.GetGameController().GetDependencyInjector().GetDependency<IScoreManager>().addPoints(1);
+        healthUpdate.Invoke(1.0f / 8.0f);
+        //GameControllerScript.GetGameController().GetDependencyInjector().GetDependency<IScoreManager>().addPoints(1);
         makeHudVisible.Invoke();
     }
 
@@ -31,3 +30,4 @@ public class CoinScript : MonoBehaviour, IRestartGameElement
         transform.rotation = initialRotation;
     }
 }
+
