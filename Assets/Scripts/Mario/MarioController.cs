@@ -24,7 +24,9 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     [SerializeField] KeyCode leftKey;
     [SerializeField] KeyCode runKey;
     [SerializeField] KeyCode jumpKey;
-    
+    [SerializeField] KeyCode crouchKey;
+
+
     [Header("Colliders")]
     [SerializeField] Collider m_RightHandCollider;
     [SerializeField] Collider m_LeftHandCollider;
@@ -118,6 +120,10 @@ public class MarioController : MonoBehaviour, IRestartGameElement
                 else
                     NextComboPunch();
             }
+            if (Input.GetKey(crouchKey))
+            {
+                animator.SetBool("isCrouching", true);
+            }
         }
 
         //Movement: camera direction + input + speed
@@ -142,6 +148,7 @@ public class MarioController : MonoBehaviour, IRestartGameElement
                     gravityMultiplyer = 1f;
                     break;
                 case 2:
+                    animator.SetBool("longJump", false);
                     verticalSpeed = jumpSpeed * 1.5f;
                     gravityMultiplyer = 2f;
                     break;
@@ -180,7 +187,6 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         }
         if (touchingCeiling && verticalSpeed > 0.0f) verticalSpeed = 0.0f;
 
-        Vector3 mouseDelta = Input.mousePosition - lastMouseCoords;
         //if (animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         if(currentSpeed == 0)
         {
@@ -199,19 +205,31 @@ public class MarioController : MonoBehaviour, IRestartGameElement
             if (lastTimeMoved + 10f <= Time.time)
             {
                 animator.SetBool("isCrouching", true);
+                if (Input.GetKeyDown(jumpKey))
+                {
+                    animator.SetBool("longJump", true);
+                    jumpCount = 1;
+                    StartCoroutine(LongJumpMovement());
+                }
             }
             else animator.SetBool("isCrouching", false);
-
-
-            //isMoving = false;
 
         }
         else
         {
-            //isMoving = true;
             lastTimeMoved = Time.time;
+            animator.SetBool("longJump", false);
+            animator.SetBool("isCrouching", false);
         }
+    }
 
+    IEnumerator LongJumpMovement()
+    {
+        for (int i = 0; i < 80; i++)
+        {
+            GetComponent<CharacterController>().Move(cam.transform.forward * 0.1f);
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     private void LateUpdate()

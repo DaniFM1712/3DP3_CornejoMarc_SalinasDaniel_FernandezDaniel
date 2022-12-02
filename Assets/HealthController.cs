@@ -28,7 +28,6 @@ public class HealthController : MonoBehaviour, IRestartGameElement
 
     public void UpdateHealth(float amountOfHealthRemoved)
     {
-        Debug.Log(amountOfHealthRemoved);
         health += amountOfHealthRemoved;
         UpdateHealthBar();
         if (health <= 0)

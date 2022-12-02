@@ -2723,6 +2723,7 @@ MonoBehaviour:
   leftKey: 97
   runKey: 304
   jumpKey: 32
+  crouchKey: 122
   m_RightHandCollider: {fileID: 248375524}
   m_LeftHandCollider: {fileID: 527262922}
   m_KickCollider: {fileID: 12121651}

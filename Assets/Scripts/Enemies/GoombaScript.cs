@@ -41,8 +41,10 @@ public class GoombaScript : MonoBehaviour, IRestartGameElement
 
     IEnumerator KillCoroutine()
     {
+        gameObject.GetComponent<CharacterController>().enabled = false;
         transform.localScale = new Vector3(1.0f, 0.1f, 1.0f);
         yield return new WaitForSeconds(m_DeadTime);
+        gameObject.GetComponent<CharacterController>().enabled = true;
         gameObject.SetActive(false);
     }
 
