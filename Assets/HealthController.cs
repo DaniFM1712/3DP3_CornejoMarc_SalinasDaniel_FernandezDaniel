@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-
+using System.Collections;
 
 public class HealthController : MonoBehaviour, IRestartGameElement
 {
@@ -40,6 +40,12 @@ public class HealthController : MonoBehaviour, IRestartGameElement
     {
         Cursor.lockState = CursorLockMode.None;
         disableInput.Invoke();
+        StartCoroutine(waitTillEndOfAnimation());
+    }
+    IEnumerator waitTillEndOfAnimation()
+    {
+        yield return new WaitForSeconds(3.1f);
+
         if (livesAmount <= 0)
         {
             deathScreen.SetActive(true);
@@ -56,5 +62,10 @@ public class HealthController : MonoBehaviour, IRestartGameElement
     {
         health = 1;
         UpdateHealthBar();
+    }
+
+    public float getFillAmount()
+    {
+        return health;
     }
 }

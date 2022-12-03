@@ -974,6 +974,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f26b75fdc40016246bd25f20f89878d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mario: {fileID: 0}
 --- !u!1 &421923066
 GameObject:
   m_ObjectHideFlags: 0
@@ -1488,6 +1489,10 @@ PrefabInstance:
     - target: {fileID: 100098, guid: 2c49a169fa02b2545921fcc829011ecb, type: 3}
       propertyPath: m_Name
       value: SuperMario
+      objectReference: {fileID: 0}
+    - target: {fileID: 100098, guid: 2c49a169fa02b2545921fcc829011ecb, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 2c49a169fa02b2545921fcc829011ecb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2729,7 +2734,6 @@ MonoBehaviour:
   m_KickCollider: {fileID: 12121651}
   m_PunchComboTime: 2.5
   m_ElevatorMaxAngleAllowed: 10
-  isPunching: 0
   cameraDummy: {fileID: 570593126}
   m_BridgeForce: 3
   m_VerticalKillSpeed: 5
@@ -2764,6 +2768,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  isInputAccepted: 1
 --- !u!143 &902389196
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3173,6 +3178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f26b75fdc40016246bd25f20f89878d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mario: {fileID: 902389195}
 --- !u!1 &1137425470
 GameObject:
   m_ObjectHideFlags: 0

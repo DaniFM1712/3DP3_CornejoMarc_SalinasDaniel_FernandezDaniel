@@ -68,8 +68,7 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     [SerializeField] private UnityEvent<float> healthUpdate;
     [SerializeField] UnityEvent makeHudVisible;
 
-
-    private bool isInputAccepted = true;
+    public bool isInputAccepted = true;
 
     private void Awake()
     {
@@ -344,13 +343,32 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     IEnumerator EnemyCollision(Vector3 direction, Collider collision)
     {
         isInputAccepted = false;
+        animator.SetBool("hit", true);
         for (int i = 0; i < 30; i++)
         {
             collision.GetComponent<CharacterController>().Move(direction * 0.1f);
             GetComponent<CharacterController>().Move(-direction * 0.1f);
             yield return new WaitForEndOfFrame();
         }
-        isInputAccepted = true;
+        animator.SetBool("hit", false);
+
+        if (FindObjectOfType<HealthController>().getFillAmount() > 0.0f)
+        {
+            isInputAccepted = true;
+
+        }
+        else
+        {
+            animator.SetBool("die", true);
+            StartCoroutine(waitTillEndOfAnimation()); 
+        }
+    }
+
+    IEnumerator waitTillEndOfAnimation()
+    {
+        yield return new WaitForSeconds(1.1f);
+        animator.SetBool("die", false);
+
     }
 
     private bool CanKillWithFeet(Vector3 normal)
@@ -366,7 +384,7 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     public void RestartGame()
     {
         controller.enabled = false;
-        isInputAccepted = true;
+        
         
         if(m_CurrentCheckpoint == null)
         {
@@ -382,7 +400,10 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         transform.SetParent(null);
         m_CurrentElevator = null;
         controller.enabled = true;
+        isInputAccepted = true;
     }
+
+
 
     public void restartCheckpoint()
     {
