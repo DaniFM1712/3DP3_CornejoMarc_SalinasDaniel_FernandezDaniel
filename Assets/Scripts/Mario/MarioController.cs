@@ -48,6 +48,7 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     bool touchingCeiling = false;
     int jumpCount = 0;
     float gravityMultiplyer = 1f;
+    bool isLongJumping = false; 
 
     [SerializeField] Transform cameraDummy;
 
@@ -105,6 +106,11 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         //Check Input
         if (isInputAccepted)
         {
+            if (Input.GetKey(crouchKey))
+            {
+                animator.SetBool("isCrouching", true);
+                
+            }
             if (Input.GetKey(fwKey))
                 movement += fw;
             if (Input.GetKey(backKey))
@@ -120,9 +126,11 @@ public class MarioController : MonoBehaviour, IRestartGameElement
                 else
                     NextComboPunch();
             }
-            if (Input.GetKey(crouchKey))
+            if (Input.GetKeyDown(jumpKey) && animator.GetBool("isCrouching") && !isLongJumping)
             {
-                animator.SetBool("isCrouching", true);
+                animator.SetBool("longJump", true);
+                jumpCount = 1;
+                StartCoroutine(LongJumpMovement());
             }
         }
 
@@ -138,7 +146,7 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         animator.SetBool("isRunning", Input.GetKey(runKey));
         animator.SetFloat("speed", currentSpeed);
 
-        if (Input.GetKeyDown(jumpKey) && jumpCount < 3)
+        if (Input.GetKeyDown(jumpKey) && jumpCount < 3 && !animator.GetBool("isCrouching"))
         {
             jumpCount++;
             switch (jumpCount)
@@ -210,9 +218,10 @@ public class MarioController : MonoBehaviour, IRestartGameElement
                     animator.SetBool("longJump", true);
                     jumpCount = 1;
                     StartCoroutine(LongJumpMovement());
+                    
                 }
             }
-            else animator.SetBool("isCrouching", false);
+            
 
         }
         else
@@ -225,11 +234,21 @@ public class MarioController : MonoBehaviour, IRestartGameElement
 
     IEnumerator LongJumpMovement()
     {
-        for (int i = 0; i < 80; i++)
+        isLongJumping = true;
+        for (int i = 0; i < 20; i++)
         {
-            GetComponent<CharacterController>().Move(cam.transform.forward * 0.1f);
+            GetComponent<CharacterController>().Move(new Vector3(transform.forward.x, 0.6f, transform.forward.z) * 0.3f);
             yield return new WaitForEndOfFrame();
         }
+        for (int i = 0; i < 10; i++)
+        {
+            GetComponent<CharacterController>().Move(new Vector3(transform.forward.x, -0.4f, transform.forward.z) * 0.3f);
+            yield return new WaitForEndOfFrame();
+        }
+        animator.SetBool("isCrouching", false);
+        animator.SetBool("longJump", false);
+        isLongJumping = false;
+
     }
 
     private void LateUpdate()
