@@ -367,7 +367,7 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     {
         controller.enabled = false;
         isInputAccepted = true;
-
+        
         if(m_CurrentCheckpoint == null)
         {
             transform.position = m_StartPosition;
@@ -382,6 +382,11 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         transform.SetParent(null);
         m_CurrentElevator = null;
         controller.enabled = true;
+    }
+
+    public void restartCheckpoint()
+    {
+        m_CurrentCheckpoint = null;
     }
 
     private void OnTriggerEnter(Collider other)

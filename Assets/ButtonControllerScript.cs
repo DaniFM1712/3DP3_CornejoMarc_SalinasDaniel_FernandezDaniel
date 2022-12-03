@@ -1,8 +1,9 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
+
 
 public class ButtonControllerScript : MonoBehaviour
 {
+    [SerializeField] MarioController mario;
     public void LastCheckpoint()
     {
         GameControllerScript.GetGameController().RestartGame();
@@ -11,8 +12,11 @@ public class ButtonControllerScript : MonoBehaviour
 
     public void RestartLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        mario.restartCheckpoint();
+        GameControllerScript.GetGameController().RestartGame();
+        transform.parent.gameObject.SetActive(false);
     }
+
     public void Quit()
     {
         Application.Quit();

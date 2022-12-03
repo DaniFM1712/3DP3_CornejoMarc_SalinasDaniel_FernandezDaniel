@@ -40,7 +40,8 @@ public class GameControllerScript : MonoBehaviour
 
     public void RestartGame()
     {
-        foreach(IRestartGameElement restartGameElement in m_RestartGameElements)
+        Cursor.lockState = CursorLockMode.Locked;
+        foreach (IRestartGameElement restartGameElement in m_RestartGameElements)
         {
             restartGameElement.RestartGame();
         }
