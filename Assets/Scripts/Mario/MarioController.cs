@@ -42,13 +42,14 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     [SerializeField] private float m_ElevatorMaxAngleAllowed = 10.0f;
     private Collider m_CurrentElevator = null;
 
-
+    float currentSpeed = 0.0f;
     float verticalSpeed = 0.0f;
     bool onGround = false;
     bool touchingCeiling = false;
     int jumpCount = 0;
     float gravityMultiplyer = 1f;
-    bool isLongJumping = false; 
+    bool isLongJumping = false;
+    bool isPunching = false;
 
     [SerializeField] Transform cameraDummy;
 
@@ -136,15 +137,19 @@ public class MarioController : MonoBehaviour, IRestartGameElement
 
         //Movement: camera direction + input + speed
         //If Movement Forward = Movement
-        float currentSpeed = 0f;
+        currentSpeed = 0f;
         if (movement.magnitude > 0.0f)
         {
             currentSpeed = (Input.GetKey(runKey) ? runSpeed : walkSpeed);
+            if (isPunching)
+                currentSpeed = currentSpeed * 0.1f;
             movement = movement.normalized * currentSpeed * Time.deltaTime;
             transform.forward = movement;   
         }
         animator.SetBool("isRunning", Input.GetKey(runKey));
         animator.SetFloat("speed", currentSpeed);
+
+
 
         if (Input.GetKeyDown(jumpKey) && jumpCount < 3 && !animator.GetBool("isCrouching"))
         {
@@ -265,6 +270,7 @@ public class MarioController : MonoBehaviour, IRestartGameElement
             m_LeftHandCollider.gameObject.SetActive(active);
         else if (punchType == TPunchType.KICK)
             m_KickCollider.gameObject.SetActive(active);
+
     }
 
     bool CanPunch()
@@ -274,7 +280,9 @@ public class MarioController : MonoBehaviour, IRestartGameElement
 
     bool MustStartComboPunch()
     {
+        
         return (Time.time - m_CurrentPunchTime) > m_PunchComboTime;
+
     }
 
     public void SetPunchActive(bool isActive)
@@ -294,6 +302,7 @@ public class MarioController : MonoBehaviour, IRestartGameElement
 
     void SetComboPunch(TPunchType punchType)
     {
+        isPunching = true;
         m_CurrentPunch = punchType;
         if (punchType == TPunchType.RIGHT_HAND)
             animator.SetTrigger("Punch1");
@@ -305,6 +314,11 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         m_CurrentPunchTime = Time.time;
         m_PunchActive = true;
 
+    }
+
+    public void FinishPunch()
+    {
+        isPunching = false;
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)

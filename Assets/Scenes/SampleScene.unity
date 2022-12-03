@@ -1367,7 +1367,7 @@ GameObject:
   - component: {fileID: 555116999}
   m_Layer: 0
   m_Name: Bottom
-  m_TagString: Untagged
+  m_TagString: Elevator
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2729,6 +2729,7 @@ MonoBehaviour:
   m_KickCollider: {fileID: 12121651}
   m_PunchComboTime: 2.5
   m_ElevatorMaxAngleAllowed: 10
+  isPunching: 0
   cameraDummy: {fileID: 570593126}
   m_BridgeForce: 3
   m_VerticalKillSpeed: 5
@@ -4252,7 +4253,7 @@ GameObject:
   - component: {fileID: 1774669384}
   m_Layer: 0
   m_Name: Top
-  m_TagString: Untagged
+  m_TagString: Elevator
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
