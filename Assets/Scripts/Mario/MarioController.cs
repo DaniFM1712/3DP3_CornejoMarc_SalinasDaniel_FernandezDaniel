@@ -218,13 +218,6 @@ public class MarioController : MonoBehaviour, IRestartGameElement
             if (lastTimeMoved + 10f <= Time.time)
             {
                 animator.SetBool("isCrouching", true);
-                if (Input.GetKeyDown(jumpKey))
-                {
-                    animator.SetBool("longJump", true);
-                    jumpCount = 1;
-                    StartCoroutine(LongJumpMovement());
-                    
-                }
             }
             
 
