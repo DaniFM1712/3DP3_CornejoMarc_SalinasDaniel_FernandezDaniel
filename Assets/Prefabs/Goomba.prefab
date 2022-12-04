@@ -219,7 +219,9 @@ GameObject:
   - component: {fileID: 2231104998251369871}
   - component: {fileID: 2231104998258375269}
   - component: {fileID: 2231104998250974983}
+  - component: {fileID: 8949068314930997612}
   - component: {fileID: 2231104998250974976}
+  - component: {fileID: 9095194816957381107}
   m_Layer: 0
   m_Name: Goomba
   m_TagString: Goomba
@@ -276,13 +278,48 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.8
-  m_Radius: 0.71
+  m_Radius: 0.68
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.82, z: 0}
+--- !u!195 &8949068314930997612
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2231104998250940847}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.7
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1.66
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!114 &2231104998250974976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2231104998250940847}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0cd05fdc3802d489c166a3f68cf6f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DeadTime: 1
+--- !u!114 &9095194816957381107
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -291,7 +328,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 2231104998250940847}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa0cd05fdc3802d489c166a3f68cf6f9, type: 3}
+  m_Script: {fileID: 11500000, guid: a2a37ad6f3af3274aa3ff8fa7161fee9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DeadTime: 1
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 1
+  currentState: 0
+  player: {fileID: 0}
+  hearDistance: 5
+  idleTime: 4
+  patrolTargets:
+  - {fileID: 0}
+  - {fileID: 0}
+  patrolMinDistance: 0.1
+  patrolRoundsToIdle: 2
+  patrolSpeed: 5
+  patrolAcceleration: 10
+  alertSpeedRotation: 90
+  CHASE_MAX_RANGE: 10
