@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class GoombaScript : MonoBehaviour, IRestartGameElement
 {
@@ -19,29 +20,15 @@ public class GoombaScript : MonoBehaviour, IRestartGameElement
         GameControllerScript.GetGameController().AddRestartGameElement(this);
     }
 
-    private void Update()
-    {
-        Vector3 movement = Vector3.zero;
-        verticalSpeed += Physics.gravity.y * Time.deltaTime;
-        movement.y += verticalSpeed * Time.deltaTime;
-
-        GetComponent<CharacterController>().Move(movement);
-        onGround = Physics.Raycast(new Ray(transform.position, Vector3.down), 0.1f);
-
-        if (onGround)
-        {
-            verticalSpeed = 0.0f;
-        }
-    }
-
     public void Kill()
     {
+        GetComponent<GoombaAIScript>().ChangeToDie();
         StartCoroutine(KillCoroutine());
     }
 
     IEnumerator KillCoroutine()
     {
-        gameObject.GetComponent<CharacterController>().enabled = false;
+        GetComponent<CharacterController>().enabled = false;
         transform.localScale = new Vector3(1.0f, 0.1f, 1.0f);
         yield return new WaitForSeconds(m_DeadTime);
         gameObject.GetComponent<CharacterController>().enabled = true;
