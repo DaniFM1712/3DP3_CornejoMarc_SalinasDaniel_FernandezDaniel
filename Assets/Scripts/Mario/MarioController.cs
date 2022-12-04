@@ -340,6 +340,8 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         }
     }
 
+    
+
     IEnumerator EnemyCollision(Vector3 direction, Collider collision)
     {
         isInputAccepted = false;

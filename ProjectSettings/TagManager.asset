@@ -10,6 +10,7 @@ TagManager:
   - Checkpoint
   - Life
   - Elevator
+  - hitArea
   layers:
   - Default
   - TransparentFX
