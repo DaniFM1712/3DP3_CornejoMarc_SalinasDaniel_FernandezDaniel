@@ -73,6 +73,10 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     [SerializeField] Transform wallDetector;
     [SerializeField] LayerMask layerMask;
     bool isSliding = false;
+    bool startRotating = false;
+    [SerializeField] float SpeedRotation;
+    float totalRotated = 0;
+
 
     public bool isInputAccepted = true;
 
@@ -155,7 +159,26 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         animator.SetBool("isRunning", Input.GetKey(runKey));
         animator.SetFloat("speed", currentSpeed);
 
+        if (Input.GetKey(jumpKey) && isSliding)
+        {
+            startRotating = true;
+            animator.SetBool("isSliding", false);
+        }
 
+        if (startRotating)
+        {
+            float frameRotation = SpeedRotation * Time.deltaTime;
+            transform.Rotate(new Vector3(0.0f, frameRotation, 0.0f));
+            totalRotated += frameRotation;
+
+
+            if (totalRotated >= 180.0f)
+            {
+                startRotating = false;
+                totalRotated = 0f;
+                StartCoroutine(StartWallJump());
+            }
+        }
 
         if (Input.GetKeyDown(jumpKey) && jumpCount < 3 && !animator.GetBool("isCrouching"))
         {
@@ -522,10 +545,25 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         DisableInput();
         isSliding = true;
         animator.SetBool("isSliding", true);
-        yield return new WaitForSeconds(0.8f);
-        animator.SetBool("isSliding", true);
+        yield return new WaitForSeconds(0.5f);
+        animator.SetBool("isSliding", false);
         isSliding = false;
+    }
+
+    IEnumerator StartWallJump()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            GetComponent<CharacterController>().Move(new Vector3(transform.forward.x, 0.6f, transform.forward.z) * 0.3f);
+            yield return new WaitForEndOfFrame();
         }
+        for (int i = 0; i < 10; i++)
+        {
+            GetComponent<CharacterController>().Move(new Vector3(transform.forward.x, -0.4f, transform.forward.z) * 0.3f);
+            yield return new WaitForEndOfFrame();
+        }
+
+    }
         
        
         //for (int i = 0; i < 30; i++)
@@ -539,5 +577,3 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     }
 
 
-
-}

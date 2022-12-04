@@ -5809,6 +5809,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 1
+  SpeedRotation: 1000
   isInputAccepted: 1
 --- !u!143 &902389196
 CharacterController:
