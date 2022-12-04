@@ -9,11 +9,16 @@ public class HealthController : MonoBehaviour, IRestartGameElement
     [SerializeField] private GameObject reviveScreen;
     [SerializeField] private GameObject deathScreen;
     [SerializeField] private UnityEvent disableInput;
-    private int livesAmount = 3;
+    [SerializeField] Text livesCounter;
+
+    private int maxLives = 3;
+    float currentLives;
     private float health;
     // Start is called before the first frame update
     void Start()
     {
+        currentLives = maxLives;
+        livesCounter.text = currentLives.ToString();
         GameControllerScript.GetGameController().AddRestartGameElement(this);
         deathScreen.SetActive(false);
         reviveScreen.SetActive(false);
@@ -46,20 +51,24 @@ public class HealthController : MonoBehaviour, IRestartGameElement
     {
         yield return new WaitForSeconds(3.1f);
 
-        if (livesAmount <= 0)
+        if (currentLives <= 1)
         {
+            livesCounter.text = currentLives.ToString();
             deathScreen.SetActive(true);
         }
 
         else
         {
+            livesCounter.text = currentLives.ToString();
             reviveScreen.SetActive(true);
         }
+
 
     }
 
     public void RestartGame()
     {
+        livesCounter.text = currentLives.ToString();
         health = 1;
         UpdateHealthBar();
     }
@@ -67,5 +76,14 @@ public class HealthController : MonoBehaviour, IRestartGameElement
     public float getFillAmount()
     {
         return health;
+    }
+
+    public void restartLives()
+    {
+        currentLives = maxLives;
+    }
+    public void substractLive()
+    {
+        currentLives--;
     }
 }
