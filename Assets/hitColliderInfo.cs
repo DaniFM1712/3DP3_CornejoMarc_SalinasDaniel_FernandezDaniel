@@ -16,7 +16,7 @@ public class hitColliderInfo : MonoBehaviour
             }
             else
             {
-                Destroy(gameObject);
+                GetComponent<GoombaScript>().Kill();
             }
         }
     }
