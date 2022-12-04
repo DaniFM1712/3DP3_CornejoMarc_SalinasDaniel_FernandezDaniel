@@ -6,7 +6,6 @@ using UnityEngine.Events;
 
 public class CoinScript : MonoBehaviour, IRestartGameElement
 {
-    [SerializeField] UnityEvent makeHudVisible;
     private Vector3 initialPosition;
     private Quaternion initialRotation;
 
@@ -21,7 +20,6 @@ public class CoinScript : MonoBehaviour, IRestartGameElement
     {
         gameObject.SetActive(false);
         GameControllerScript.GetGameController().GetDependencyInjector().GetDependency<IScoreManager>().addPoints(1);
-        makeHudVisible.Invoke();
     }
 
     public void RestartGame()

@@ -68,7 +68,14 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     [SerializeField] private UnityEvent<float> healthUpdate;
     [SerializeField] UnityEvent makeHudVisible;
 
+
+    [Header("Wall Detector")]
+    [SerializeField] Transform wallDetector;
+    [SerializeField] LayerMask layerMask;
+    bool isSliding = false;
+
     public bool isInputAccepted = true;
+
 
     private void Awake()
     {
@@ -175,8 +182,12 @@ public class MarioController : MonoBehaviour, IRestartGameElement
 
 
         //Apply gravity to vertical speed
-        verticalSpeed += Physics.gravity.y * gravityMultiplyer * Time.deltaTime;
-        movement.y += verticalSpeed * Time.deltaTime;
+        if (!isSliding)
+        {
+            verticalSpeed += Physics.gravity.y * gravityMultiplyer * Time.deltaTime;
+            movement.y += verticalSpeed * Time.deltaTime;
+        }
+       
 
         //Move
         CollisionFlags flags = controller.Move(movement);
@@ -189,9 +200,14 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         animator.SetFloat("verticalSpeed", verticalSpeed);
         animator.SetBool("onGround", onGround);
 
+        detectCollision();
+
 
         if (onGround)
         {
+            if(!isInputAccepted)
+                isInputAccepted = true;
+            animator.SetBool("isSliding", false);
             verticalSpeed = 0.0f;
             gravityMultiplyer = 1f;
             jumpCount = 0;
@@ -488,4 +504,40 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     {
         isInputAccepted = false;
     }
+
+
+    private void detectCollision()
+    {
+        if (Physics.Raycast(wallDetector.position, (transform.forward), out RaycastHit hit, 0.5f, layerMask))
+        {
+            if (verticalSpeed < -2)
+            {
+                StartCoroutine(WallJump());
+            }
+        }
+    }
+
+    IEnumerator WallJump()
+    {
+        DisableInput();
+        isSliding = true;
+        animator.SetBool("isSliding", true);
+        yield return new WaitForSeconds(0.8f);
+        animator.SetBool("isSliding", true);
+        isSliding = false;
+        }
+        
+       
+        //for (int i = 0; i < 30; i++)
+        //{
+        //    collision.GetComponent<CharacterController>().Move(direction * 0.1f);
+        //    GetComponent<CharacterController>().Move(-direction * 0.1f);
+        //    yield return new WaitForEndOfFrame();
+        //}
+
+
+    }
+
+
+
 }
