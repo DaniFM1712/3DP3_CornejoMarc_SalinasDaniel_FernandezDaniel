@@ -49,7 +49,7 @@ public class HealthController : MonoBehaviour, IRestartGameElement
     }
     IEnumerator waitTillEndOfAnimation()
     {
-        yield return new WaitForSeconds(3.1f);
+        yield return new WaitForSeconds(2f);
 
         if (currentLives <= 1)
         {
@@ -63,11 +63,14 @@ public class HealthController : MonoBehaviour, IRestartGameElement
             reviveScreen.SetActive(true);
         }
 
+        Time.timeScale = 0f;
+
 
     }
 
     public void RestartGame()
     {
+        Time.timeScale = 1f;
         livesCounter.text = currentLives.ToString();
         health = 1;
         UpdateHealthBar();

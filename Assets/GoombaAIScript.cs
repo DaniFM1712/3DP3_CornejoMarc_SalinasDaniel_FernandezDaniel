@@ -13,7 +13,7 @@ public class GoombaAIScript : MonoBehaviour
     private CharacterController controller;
     private bool onGround;
     private float verticalSpeed;
-
+    private Animator animator;
     enum State { IDLE, PATROL, ALERT, CHASE, HIT, DIE }
     [SerializeField] State currentState;
 
@@ -42,6 +42,7 @@ public class GoombaAIScript : MonoBehaviour
 
     private void Awake()
     {
+        animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
         agent = GetComponent<NavMeshAgent>();
         currentState = State.IDLE;
@@ -63,22 +64,28 @@ public class GoombaAIScript : MonoBehaviour
         switch (currentState)
         {
             case State.IDLE:
+                animator.SetInteger("AnimationIndex", 0);
                 UpdateIdle();
                 ChangeFromIdle();
                 break;
             case State.PATROL:
+                animator.SetInteger("AnimationIndex", 1);
                 UpdatePatrol();
                 ChangeFromPatrol();
                 break;
             case State.ALERT:
+                animator.SetInteger("AnimationIndex", 3);
                 UpdateAlert();
                 ChangeFromAlert();
                 break;
             case State.CHASE:
+                animator.SetInteger("AnimationIndex", 2);
                 break;
             case State.HIT:
+                animator.SetInteger("AnimationIndex", 1);
                 break;
             case State.DIE:
+                animator.SetInteger("AnimationIndex", 4);
                 break;
         }
     }
@@ -95,6 +102,7 @@ public class GoombaAIScript : MonoBehaviour
         if (HearsPlayer())
         {
             currentState = State.ALERT;
+            animator.SetInteger("AnimationIndex", 3);
         }
         if (Time.time >= idleStarted + idleTime)
         {
@@ -126,12 +134,14 @@ public class GoombaAIScript : MonoBehaviour
         if (HearsPlayer())
         {
             currentState = State.ALERT;
+            animator.SetInteger("AnimationIndex", 3);
             totalRotated = 0.0f;
         }
     }
 
     void UpdateAlert()
     {
+        animator.SetInteger("AnimationIndex", 2);
         agent.isStopped = true;
         float frameRotation = alertSpeedRotation * Time.deltaTime;
         transform.Rotate(new Vector3(0.0f, frameRotation, 0.0f));
@@ -157,11 +167,13 @@ public class GoombaAIScript : MonoBehaviour
 
     bool SeesPlayer()
     {
-        float playerDistance = (player.transform.position - transform.position).magnitude;
+        float playerDistance = distanceToPlayer.magnitude;
 
         if (Vector3.Angle(transform.forward, distanceToPlayer.normalized) <= 5)
         {
-            Ray r = new Ray(transform.position, distanceToPlayer.normalized);
+            Vector3 position = new Vector3(transform.position.x, transform.position.y+3f, transform.position.z);
+
+            Ray r = new Ray(position, distanceToPlayer.normalized);
             if (Physics.Raycast(r, out RaycastHit hitInfo, playerDistance, obstacleMask))
             {
                 return false;
@@ -208,6 +220,7 @@ public class GoombaAIScript : MonoBehaviour
         else
         {
             currentState = State.ALERT;
+            animator.SetInteger("AnimationIndex", 3);
         }
     }
 
@@ -220,6 +233,7 @@ public class GoombaAIScript : MonoBehaviour
             Vector3 directionVector = (hit.collider.transform.position - transform.position).normalized;
             directionVector.y = 0;
             currentState = State.HIT;
+            hit.collider.gameObject.GetComponent<MarioController>().GetDamaged(-1.0f / 8.0f);
             StartCoroutine(EnemyCollision(directionVector, hit.collider));
 
         }
@@ -227,8 +241,7 @@ public class GoombaAIScript : MonoBehaviour
 
     IEnumerator EnemyCollision(Vector3 direction, Collider collision)
     {
-
-        while(distanceToPlayer.magnitude < 5f)
+        while (distanceToPlayer.magnitude < 5f)
         {
             collision.GetComponent<CharacterController>().Move(direction * 0.1f);
             controller.Move(-direction * 0.1f);
@@ -240,5 +253,6 @@ public class GoombaAIScript : MonoBehaviour
     public void ChangeToDie()
     {
         currentState = State.DIE;
+        
     }
 }

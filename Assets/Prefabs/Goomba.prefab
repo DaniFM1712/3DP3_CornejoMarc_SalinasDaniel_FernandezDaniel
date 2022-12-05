@@ -222,6 +222,8 @@ GameObject:
   - component: {fileID: 8949068314930997612}
   - component: {fileID: 2231104998250974976}
   - component: {fileID: 9095194816957381107}
+  - component: {fileID: 659001470344536815}
+  - component: {fileID: 6140127742527508534}
   m_Layer: 0
   m_Name: Goomba
   m_TagString: Goomba
@@ -257,7 +259,7 @@ Animator:
   m_GameObject: {fileID: 2231104998250940847}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 0dc47b9b8a69aca49a111614ec2274be, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 963db5ac6d6ec0b4a89788168339a761, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -343,7 +345,32 @@ MonoBehaviour:
   - {fileID: 0}
   patrolMinDistance: 0.1
   patrolRoundsToIdle: 2
-  patrolSpeed: 5
-  patrolAcceleration: 10
+  patrolSpeed: 2
+  patrolAcceleration: 5
   alertSpeedRotation: 90
   CHASE_MAX_RANGE: 10
+--- !u!114 &659001470344536815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2231104998250940847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25aff62528b82e7478e79153ecf597ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!65 &6140127742527508534
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2231104998250940847}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.5016569, y: 1.4033394, z: 1.705738}
+  m_Center: {x: 0.039584104, y: 0.7207985, z: -0.04667115}

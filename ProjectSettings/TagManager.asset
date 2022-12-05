@@ -16,13 +16,13 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Colliders
   - Water
   - UI
   - PhysicsNoCollisions
   - Player
-  - 
-  - 
+  - Map
+  - Enemy
   - 
   - 
   - 

@@ -64,9 +64,11 @@ public class MarioController : MonoBehaviour, IRestartGameElement
 
     [Header("Enemies & Health")]
     [SerializeField] float m_VerticalKillSpeed = 5.0f;
-    [SerializeField] float m_KillGoombaMaxAngle = 45.0f;
+    [SerializeField] float m_KillGoombaMaxAngle = 60.0f;
     [SerializeField] private UnityEvent<float> healthUpdate;
     [SerializeField] UnityEvent makeHudVisible;
+    [SerializeField] LayerMask enemyMask;
+    private bool onEnemy = false;
 
 
     [Header("Wall Detector")]
@@ -215,9 +217,9 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         //Move
         CollisionFlags flags = controller.Move(movement);
 
-        //onGround =(flags & CollisionFlags.Below) != 0;
-        onGround = Physics.Raycast(new Ray(transform.position, Vector3.down), 0.2f);
-        
+        onGround =(flags & CollisionFlags.Below) != 0;
+        //onGround = Physics.Raycast(new Ray(transform.position, Vector3.down), 0.2f);
+
         touchingCeiling = (flags & CollisionFlags.Above) != 0;
 
         animator.SetFloat("verticalSpeed", verticalSpeed);
@@ -226,10 +228,8 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         detectCollision();
 
 
-        if (onGround)
+        if (onGround && !onEnemy)
         {
-            if(!isInputAccepted)
-                isInputAccepted = true;
             animator.SetBool("isSliding", false);
             verticalSpeed = 0.0f;
             gravityMultiplyer = 1f;
@@ -238,7 +238,6 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         }
         if (touchingCeiling && verticalSpeed > 0.0f) verticalSpeed = 0.0f;
 
-        //if (animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         if(currentSpeed == 0)
         {
             float l_MouseAxisX = Input.GetAxis("Mouse X");
@@ -267,30 +266,29 @@ public class MarioController : MonoBehaviour, IRestartGameElement
             animator.SetBool("isCrouching", false);
         }
     }
+    private void LateUpdate()
+    {
+        float l_AngleY = transform.rotation.eulerAngles.y;
+        transform.rotation = Quaternion.Euler(0.0f, l_AngleY, 0.0f);
+    }
 
     IEnumerator LongJumpMovement()
     {
         isLongJumping = true;
         for (int i = 0; i < 20; i++)
         {
-            GetComponent<CharacterController>().Move(new Vector3(transform.forward.x, 0.6f, transform.forward.z) * 0.3f);
+            GetComponent<CharacterController>().Move(new Vector3(transform.forward.x, 0.6f, transform.forward.z) * 0.2f);
             yield return new WaitForEndOfFrame();
         }
         for (int i = 0; i < 10; i++)
         {
-            GetComponent<CharacterController>().Move(new Vector3(transform.forward.x, -0.4f, transform.forward.z) * 0.3f);
+            GetComponent<CharacterController>().Move(new Vector3(transform.forward.x, -0.4f, transform.forward.z) * 0.2f);
             yield return new WaitForEndOfFrame();
         }
         animator.SetBool("isCrouching", false);
         animator.SetBool("longJump", false);
         isLongJumping = false;
 
-    }
-
-    private void LateUpdate()
-    {
-        float l_AngleY = transform.rotation.eulerAngles.y;
-        transform.rotation = Quaternion.Euler(0.0f, l_AngleY, 0.0f);
     }
 
     public void HitPunch(TPunchType punchType, bool active)
@@ -369,11 +367,10 @@ public class MarioController : MonoBehaviour, IRestartGameElement
             else
             {
                 //empujar los dos en direcciones opuestas
-                makeHudVisible.Invoke();
                 Vector3 directionVector = (hit.collider.transform.position - transform.position).normalized;
                 directionVector.y = 0;
                 StartCoroutine(EnemyCollision(directionVector, hit.collider));
-                healthUpdate.Invoke(-1.0f/8.0f);
+                GetDamaged(-1.0f / 8.0f);
 
             }
         }
@@ -392,22 +389,12 @@ public class MarioController : MonoBehaviour, IRestartGameElement
             yield return new WaitForEndOfFrame();
         }
         animator.SetBool("hit", false);
-
-        if (FindObjectOfType<HealthController>().getFillAmount() > 0.0f)
-        {
-            isInputAccepted = true;
-
-        }
-        else
-        {
-            animator.SetBool("die", true);
-            StartCoroutine(waitTillEndOfAnimation()); 
-        }
     }
 
     IEnumerator waitTillEndOfAnimation()
     {
         yield return new WaitForSeconds(1.1f);
+        onEnemy = false;
         animator.SetBool("die", false);
 
     }
@@ -419,7 +406,9 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     }
     private void JumpOverEnemy()
     {
+        onEnemy = true;
         verticalSpeed = m_VerticalKillSpeed;
+        StartCoroutine(waitTillEndOfAnimation());
     }
 
     public void RestartGame()
@@ -535,12 +524,12 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         {
             if (verticalSpeed < -2)
             {
-                StartCoroutine(WallJump());
+                StartCoroutine(WallSlide());
             }
         }
     }
 
-    IEnumerator WallJump()
+    IEnumerator WallSlide()
     {
         DisableInput();
         isSliding = true;
@@ -548,13 +537,15 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         yield return new WaitForSeconds(0.5f);
         animator.SetBool("isSliding", false);
         isSliding = false;
+        isInputAccepted = true;
     }
 
     IEnumerator StartWallJump()
     {
+        animator.SetBool("isSliding", false);
         for (int i = 0; i < 20; i++)
         {
-            GetComponent<CharacterController>().Move(new Vector3(transform.forward.x, 0.6f, transform.forward.z) * 0.3f);
+            GetComponent<CharacterController>().Move(new Vector3(transform.forward.x, 0.6f, transform.forward.z) * 0.1f);
             yield return new WaitForEndOfFrame();
         }
         for (int i = 0; i < 10; i++)
@@ -562,18 +553,28 @@ public class MarioController : MonoBehaviour, IRestartGameElement
             GetComponent<CharacterController>().Move(new Vector3(transform.forward.x, -0.4f, transform.forward.z) * 0.3f);
             yield return new WaitForEndOfFrame();
         }
+        isInputAccepted = true;
+
+    }
+
+    public void GetDamaged(float damage)
+    {
+        makeHudVisible.Invoke();
+        healthUpdate.Invoke(damage);
+        if (FindObjectOfType<HealthController>().getFillAmount() > 0.0f)
+        {
+            isInputAccepted = true;
+
+        }
+        else
+        {
+            isInputAccepted = false;
+            animator.SetBool("die", true);
+            StartCoroutine(waitTillEndOfAnimation());
+        }
 
     }
         
-       
-        //for (int i = 0; i < 30; i++)
-        //{
-        //    collision.GetComponent<CharacterController>().Move(direction * 0.1f);
-        //    GetComponent<CharacterController>().Move(-direction * 0.1f);
-        //    yield return new WaitForEndOfFrame();
-        //}
-
-
-    }
+}
 
 
