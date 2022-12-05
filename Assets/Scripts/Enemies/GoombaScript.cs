@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class GoombaScript : MonoBehaviour, IRestartGameElement
 {
@@ -12,6 +13,7 @@ public class GoombaScript : MonoBehaviour, IRestartGameElement
     float verticalSpeed;
     bool onGround;
     [SerializeField] private float m_DeadTime = 3.0f;
+    [SerializeField] UnityEvent goombaDie;
 
     private void Start()
     {
@@ -29,6 +31,7 @@ public class GoombaScript : MonoBehaviour, IRestartGameElement
     IEnumerator KillCoroutine()
     {
         GetComponent<CharacterController>().enabled = false;
+        goombaDie.Invoke();
         transform.localScale = new Vector3(1.0f, 0.1f, 1.0f);
         yield return new WaitForSeconds(m_DeadTime);
         gameObject.GetComponent<CharacterController>().enabled = true;

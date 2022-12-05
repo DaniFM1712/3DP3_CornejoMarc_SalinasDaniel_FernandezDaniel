@@ -5,6 +5,7 @@ public class LifeScript : MonoBehaviour, IRestartGameElement
 {
     [SerializeField] UnityEvent makeHudVisible;
     [SerializeField] UnityEvent <float> healthUpdate;
+    [SerializeField] UnityEvent pickStar;
     private Vector3 initialPosition;
     private Quaternion initialRotation;
 
@@ -17,6 +18,7 @@ public class LifeScript : MonoBehaviour, IRestartGameElement
 
     public void Pick()
     {
+        pickStar.Invoke();
         gameObject.SetActive(false);
         healthUpdate.Invoke(1.0f / 8.0f);
         //GameControllerScript.GetGameController().GetDependencyInjector().GetDependency<IScoreManager>().addPoints(1);

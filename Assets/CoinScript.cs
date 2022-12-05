@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 public class CoinScript : MonoBehaviour, IRestartGameElement
 {
+    [SerializeField] UnityEvent pickCoin;
     private Vector3 initialPosition;
     private Quaternion initialRotation;
 
@@ -18,6 +19,7 @@ public class CoinScript : MonoBehaviour, IRestartGameElement
 
     public void Pick()
     {
+        pickCoin.Invoke();
         gameObject.SetActive(false);
         GameControllerScript.GetGameController().GetDependencyInjector().GetDependency<IScoreManager>().addPoints(1);
     }

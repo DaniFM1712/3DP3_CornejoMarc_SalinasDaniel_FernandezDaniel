@@ -47,11 +47,11 @@ public class GameControllerScript : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            RestartGame();
-        }
-    }
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.R))
+    //    {
+    //        RestartGame();
+    //    }
+    //}
 }
