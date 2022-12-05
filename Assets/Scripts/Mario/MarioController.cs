@@ -308,10 +308,8 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     }
 
     bool MustStartComboPunch()
-    {
-        
+    {   
         return (Time.time - m_CurrentPunchTime) > m_PunchComboTime;
-
     }
 
     public void SetPunchActive(bool isActive)

@@ -4086,7 +4086,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -4182,7 +4182,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -13503,7 +13503,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6583260361600596934, guid: cd7e1ad8d03a7af4e9f0516262e0d265, type: 3}
       propertyPath: m_VerticalKillSpeed
-      value: 5
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6583260361600596934, guid: cd7e1ad8d03a7af4e9f0516262e0d265, type: 3}
       propertyPath: m_KillGoombaMaxAngle
