@@ -338,7 +338,7 @@ MonoBehaviour:
     m_Bits: 1
   currentState: 0
   player: {fileID: 0}
-  hearDistance: 5
+  hearDistance: 8
   idleTime: 4
   patrolTargets:
   - {fileID: 0}
@@ -361,6 +361,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25aff62528b82e7478e79153ecf597ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitPunch:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &6140127742527508534
 BoxCollider:
   m_ObjectHideFlags: 0

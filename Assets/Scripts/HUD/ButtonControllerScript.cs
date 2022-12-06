@@ -1,9 +1,11 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ButtonControllerScript : MonoBehaviour
 {
     [SerializeField] MarioController mario;
+    [SerializeField] private UnityEvent startSounds;
 
 
     public void LastCheckpoint()
@@ -11,6 +13,7 @@ public class ButtonControllerScript : MonoBehaviour
         FindObjectOfType<HealthController>().substractLive();
         GameControllerScript.GetGameController().RestartGame();
         transform.parent.gameObject.SetActive(false);
+        startSounds.Invoke();
     }
 
     public void RestartLevel()
@@ -19,6 +22,7 @@ public class ButtonControllerScript : MonoBehaviour
         mario.restartCheckpoint();
         GameControllerScript.GetGameController().RestartGame();
         transform.parent.gameObject.SetActive(false);
+        startSounds.Invoke();
     }
 
     public void Quit()

@@ -8,7 +8,7 @@ public class HealthController : MonoBehaviour, IRestartGameElement
     [SerializeField] Image healthFill;
     [SerializeField] private GameObject reviveScreen;
     [SerializeField] private GameObject deathScreen;
-    [SerializeField] private UnityEvent disableInput;
+    [SerializeField] private UnityEvent disableFeatureByDeath;
     [SerializeField] Text livesCounter;
 
     private int maxLives = 3;
@@ -34,6 +34,10 @@ public class HealthController : MonoBehaviour, IRestartGameElement
     public void UpdateHealth(float amountOfHealthRemoved)
     {
         health += amountOfHealthRemoved;
+        if(health > 1f)
+        {
+            health = 1f;
+        }
         UpdateHealthBar();
         if (health <= 0)
         {
@@ -44,7 +48,7 @@ public class HealthController : MonoBehaviour, IRestartGameElement
     private void Die()
     {
         Cursor.lockState = CursorLockMode.None;
-        disableInput.Invoke();
+        disableFeatureByDeath.Invoke();
         StartCoroutine(waitTillEndOfAnimation());
     }
     IEnumerator waitTillEndOfAnimation()

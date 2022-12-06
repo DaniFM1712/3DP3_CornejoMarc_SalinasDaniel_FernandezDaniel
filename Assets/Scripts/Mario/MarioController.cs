@@ -75,6 +75,7 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     [SerializeField] Transform wallDetector;
     [SerializeField] LayerMask layerMask;
     bool isSliding = false;
+    bool isWallJumping = false;
     bool startRotating = false;
     [SerializeField] float SpeedRotation;
     float totalRotated = 0;
@@ -119,7 +120,7 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         //Check Input
         if (isInputAccepted)
         {
-            if (Input.GetKey(crouchKey))
+            if (Input.GetKey(crouchKey) && onGround)
             {
                 animator.SetBool("isCrouching", true);
                 
@@ -238,7 +239,7 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         }
         if (touchingCeiling && verticalSpeed > 0.0f) verticalSpeed = 0.0f;
 
-        if(currentSpeed == 0)
+        if(currentSpeed == 0 && verticalSpeed<1)
         {
             float l_MouseAxisX = Input.GetAxis("Mouse X");
             float l_MouseAxisY = Input.GetAxis("Mouse Y");
@@ -535,11 +536,14 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         yield return new WaitForSeconds(0.5f);
         animator.SetBool("isSliding", false);
         isSliding = false;
-        isInputAccepted = true;
+        if(!isWallJumping)
+            isInputAccepted = true;
     }
 
     IEnumerator StartWallJump()
     {
+        isWallJumping = true;
+        controller.Move(new Vector3(0, 0, 0));
         animator.SetBool("isSliding", false);
         for (int i = 0; i < 20; i++)
         {
@@ -551,23 +555,33 @@ public class MarioController : MonoBehaviour, IRestartGameElement
             GetComponent<CharacterController>().Move(new Vector3(transform.forward.x, -0.4f, transform.forward.z) * 0.3f);
             yield return new WaitForEndOfFrame();
         }
+
+        yield return new WaitForSeconds(0.5f);
+        isWallJumping = false;
         isInputAccepted = true;
 
     }
 
     public void GetDamaged(float damage)
     {
+        
         makeHudVisible.Invoke();
         healthUpdate.Invoke(damage);
         if (FindObjectOfType<HealthController>().getFillAmount() > 0.0f)
         {
+            GetComponent<AnimatorEventConsumer>().HitSoundEvent();
             isInputAccepted = true;
 
         }
         else
         {
-            isInputAccepted = false;
-            animator.SetBool("die", true);
+            
+            isInputAccepted = false; 
+            if (!animator.GetBool("die"))
+            {
+                GetComponent<AnimatorEventConsumer>().DeathSoundEvent();
+                animator.SetBool("die", true);
+            }
             StartCoroutine(waitTillEndOfAnimation());
         }
 

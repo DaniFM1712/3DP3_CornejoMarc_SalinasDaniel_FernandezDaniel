@@ -10,8 +10,10 @@ TagManager:
   - Checkpoint
   - Life
   - Elevator
-  - hitArea
   - Map
+  - hitArea1
+  - hitArea2
+  - hitArea3
   layers:
   - Default
   - TransparentFX

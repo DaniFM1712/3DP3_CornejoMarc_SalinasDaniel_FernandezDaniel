@@ -193,11 +193,13 @@ public class GoombaAIScript : MonoBehaviour
     IEnumerator Chase()
     {
         Vector3 initialPosition = transform.position;
-        while(distanceToPlayer.magnitude < 10f && currentState == State.CHASE)
+        int moveRepetitions = 0;
+        while(moveRepetitions < 60 && currentState == State.CHASE)
         {
             Vector3 movement = transform.forward;
             movement.y += verticalSpeed * Time.deltaTime;
             controller.Move(movement * 0.1f);
+            moveRepetitions++;
             yield return new WaitForFixedUpdate();
         }
 
