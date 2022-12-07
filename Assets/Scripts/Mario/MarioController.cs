@@ -521,7 +521,8 @@ public class MarioController : MonoBehaviour, IRestartGameElement
     {
         if (Physics.Raycast(wallDetector.position, (transform.forward), out RaycastHit hit, 0.5f, layerMask))
         {
-            if (verticalSpeed < -2)
+            float angle = Vector3.Angle(hit.normal, Vector3.up);
+            if ((verticalSpeed < -2 || verticalSpeed > 2) && (angle >= 70f && angle <= 100f))
             {
                 StartCoroutine(WallSlide());
             }
@@ -545,6 +546,7 @@ public class MarioController : MonoBehaviour, IRestartGameElement
         isWallJumping = true;
         controller.Move(new Vector3(0, 0, 0));
         animator.SetBool("isSliding", false);
+        yield return new WaitForSeconds(0.2f);
         for (int i = 0; i < 20; i++)
         {
             GetComponent<CharacterController>().Move(new Vector3(transform.forward.x, 0.6f, transform.forward.z) * 0.1f);
@@ -556,7 +558,7 @@ public class MarioController : MonoBehaviour, IRestartGameElement
             yield return new WaitForEndOfFrame();
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.8f);
         isWallJumping = false;
         isInputAccepted = true;
 
