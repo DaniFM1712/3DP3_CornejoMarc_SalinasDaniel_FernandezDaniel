@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
-public class GoombaAIScript : MonoBehaviour
+public class GoombaAIScript : MonoBehaviour, IRestartGameElement
 {
 
     NavMeshAgent agent;
@@ -42,6 +42,7 @@ public class GoombaAIScript : MonoBehaviour
 
     private void Awake()
     {
+        GameControllerScript.GetGameController().AddRestartGameElement(this);
         animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
         agent = GetComponent<NavMeshAgent>();
@@ -256,5 +257,10 @@ public class GoombaAIScript : MonoBehaviour
     {
         currentState = State.DIE;
         
+    }
+
+    public void RestartGame()
+    {
+        currentState = State.IDLE;
     }
 }
