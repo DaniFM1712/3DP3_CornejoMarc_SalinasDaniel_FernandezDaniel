@@ -6,7 +6,7 @@ Membres:
 
 Totes les parts han sigut desenvolupades entre tots.
 
-Link del vídeo: //MARC  
+Link del vídeo: https://www.youtube.com/watch?v=028ivbKXnls  
 Link github: https://github.com/DaniFM1712/3DP3_CornejoMarc_SalinasDaniel_FernandezDaniel.git
 
 Controls Mario  
