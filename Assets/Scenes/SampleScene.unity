@@ -6870,6 +6870,7 @@ GameObject:
   - component: {fileID: 919853096}
   - component: {fileID: 919853095}
   - component: {fileID: 919853094}
+  - component: {fileID: 919853097}
   m_Layer: 0
   m_Name: FinalZone
   m_TagString: Untagged
@@ -6885,7 +6886,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919853093}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -6912,6 +6913,46 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &919853097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919853093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb14f8e522645a64aae1f9bec25c606c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disableFeature:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 902389195}
+        m_TargetAssemblyTypeName: MarioController, Assembly-CSharp
+        m_MethodName: DisableInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 587020915}
+        m_TargetAssemblyTypeName: AnimatorEventConsumer, Assembly-CSharp
+        m_MethodName: StopSounds
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  finalScreen: {fileID: 406898263}
 --- !u!1 &945674363
 GameObject:
   m_ObjectHideFlags: 0
