@@ -16,9 +16,8 @@ public class GoombaAIScript : MonoBehaviour, IRestartGameElement
     private Animator animator;
     enum State { IDLE, PATROL, ALERT, CHASE, HIT, DIE }
     [SerializeField] State currentState;
-
     [SerializeField] GameObject player;
-    [SerializeField] float hearDistance;
+    
 
     [Header("IDLE")]
     [SerializeField] float idleTime;
@@ -33,6 +32,7 @@ public class GoombaAIScript : MonoBehaviour, IRestartGameElement
     int currentPatrolTarget = 0;
 
     [Header("ALERT")]
+    [SerializeField] float hearDistance;
     [SerializeField] float alertSpeedRotation;
     float totalRotated = 0.0f;
 
@@ -175,7 +175,7 @@ public class GoombaAIScript : MonoBehaviour, IRestartGameElement
             Vector3 position = new Vector3(transform.position.x, transform.position.y+3f, transform.position.z);
 
             Ray r = new Ray(position, distanceToPlayer.normalized);
-            if (Physics.Raycast(r, out RaycastHit hitInfo, playerDistance, obstacleMask))
+            if (Physics.Raycast(r, playerDistance, obstacleMask))
             {
                 return false;
             }
