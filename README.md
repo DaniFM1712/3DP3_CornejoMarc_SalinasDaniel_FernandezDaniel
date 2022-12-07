@@ -17,3 +17,5 @@ CTRL(press): crouch.
 CTRL --> SPACE: long jump.  
 MOUSE: camera movement.  
 LEFT MOUSE BUTTON: punch1, punch2, kick.  
+O: lock/unlock mouse cursor.  
+I: lock/unclock camera rotation.
