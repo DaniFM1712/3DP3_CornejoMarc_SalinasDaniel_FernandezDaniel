@@ -262,5 +262,6 @@ public class GoombaAIScript : MonoBehaviour, IRestartGameElement
     public void RestartGame()
     {
         currentState = State.IDLE;
+        idleStarted = Time.time;
     }
 }
